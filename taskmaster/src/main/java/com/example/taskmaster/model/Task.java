@@ -1,11 +1,13 @@
 package com.example.taskmaster.model;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDate;
 
 @Data
 @Entity
+@Builder
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

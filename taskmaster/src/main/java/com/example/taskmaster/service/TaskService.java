@@ -1,5 +1,6 @@
 package com.example.taskmaster.service;
 
+import com.example.taskmaster.dto.TaskRequest;
 import com.example.taskmaster.model.Task;
 import com.example.taskmaster.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,13 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
-    public Task createTask(Task task) {
+    public Task createTask(TaskRequest request) {
+        Task task = Task.builder()
+                .title(request.title())
+                .completed(request.completed())
+                .description(request.description())
+                .dueDate(request.dueDate())
+                .build();
         return taskRepository.save(task);
     }
 

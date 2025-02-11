@@ -1,7 +1,9 @@
 package com.example.taskmaster.controller;
 
+import com.example.taskmaster.dto.TaskRequest;
 import com.example.taskmaster.model.Task;
 import com.example.taskmaster.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,8 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody Task task) {
-        return taskService.createTask(task);
+    public Task createTask(@RequestBody @Valid TaskRequest request) {
+        return taskService.createTask(request);
     }
 
     @PutMapping("/{id}")
