@@ -5,6 +5,7 @@ import com.example.taskmaster.model.Task;
 import com.example.taskmaster.service.TaskService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,9 @@ public class TaskController {
     }
 
     @PostMapping
-    public Task createTask(@RequestBody @Valid TaskRequest request) {
-        return taskService.createTask(request);
+    public ResponseEntity<Task> createTask(@RequestBody @Valid TaskRequest request) {
+        Task task = taskService.createTask(request);
+        return new ResponseEntity<>(task, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

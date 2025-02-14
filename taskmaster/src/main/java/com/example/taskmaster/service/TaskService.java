@@ -1,8 +1,10 @@
 package com.example.taskmaster.service;
 
 import com.example.taskmaster.dto.TaskRequest;
+import com.example.taskmaster.exeption.ResourceNotFoundException;
 import com.example.taskmaster.model.Task;
 import com.example.taskmaster.repository.TaskRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -27,16 +29,25 @@ public class TaskService {
         return taskRepository.save(task);
     }
 
+    @Transactional
     public Task updateTask(Long id, Task taskDetails) {
-        Task task = taskRepository.findById(id).orElseThrow(() -> new RuntimeException("Task not found"));
-        task.setTitle(taskDetails.getTitle());
-        task.setDescription(taskDetails.getDescription());
-        task.setDueDate(taskDetails.getDueDate());
-        task.setCompleted(taskDetails.isCompleted());
-        return taskRepository.save(task);
+        return taskRepository.findById(id)
+                .map(existingTask -> {
+                    existingTask.setTitle(taskDetails.getTitle());
+                    existingTask.setDescription(taskDetails.getDescription());
+                    existingTask.setDueDate(taskDetails.getDueDate());
+                    existingTask.setCompleted(taskDetails.isCompleted());
+                    return taskRepository.save(existingTask);
+                })
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 
+    @Transactional
     public void deleteTask(Long id) {
+        if (!taskRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Task with ID " + id + " not found");
+        }
         taskRepository.deleteById(id);
     }
+
 }
